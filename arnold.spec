@@ -2,7 +2,7 @@ Summary:	Amstrad CPC Emulator
 Summary(pl):	Emulator Amstrada CPC
 Name:		arnold
 Version:	0.20020127
-Release:	0.9
+Release:	1
 License:	GPL (except ROMs)
 Group:		Applications
 Source0:	http://arnold.emuunlim.com/download/arnsrc27012002.zip
