@@ -8,6 +8,7 @@ Group:		Applications
 Source0:	http://arnold.emuunlim.com/download/arnsrc27012002.zip
 # Source0-md5:	a8ae9ce1aeeae6ba9a19083731811150
 Patch0:		%{name}-romsdir.patch
+URL:		http://arnold.emuunlim.com/
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	gtk+-devel >= 1.2.0
 BuildRequires:	unzip
