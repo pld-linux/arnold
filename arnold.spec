@@ -1,5 +1,5 @@
 Summary:	Amstrad CPC Emulator
-Summary(pl):	Emulator Amstrada CPC
+Summary(pl.UTF-8):   Emulator Amstrada CPC
 Name:		arnold
 Version:	0.20020127
 Release:	1
@@ -21,12 +21,12 @@ emulator.
 The ROMs are (c) Copyright Amstrad plc and Locomotive Software Ltd,
 distributed with this program with permission of Amstrad plc.
 
-%description -l pl
+%description -l pl.UTF-8
 Emulator Amstrada/Schneidera CPC, Plus/CPC+ oraz VEB Mikroelektronik
 KC Compact.
 
-Do³±czone obrazy ROMów s± objête przez copyright Amstrad plc i
-Locomotive Software Ltd, z tym programem s± rozprowadzane za zgod±
+DoÅ‚Ä…czone obrazy ROMÃ³w sÄ… objÄ™te przez copyright Amstrad plc i
+Locomotive Software Ltd, z tym programem sÄ… rozprowadzane za zgodÄ…
 Amstrad plc.
 
 %prep
