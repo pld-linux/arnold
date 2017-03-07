@@ -1,0 +1,47 @@
+--- arnold/src/cpc/debugger/debug.c.orig	2001-10-14 10:50:08.000000000 +0200
++++ arnold/src/cpc/debugger/debug.c	2017-03-07 19:46:32.700601403 +0100
+@@ -80,7 +80,7 @@ void	Debug_WriteString(DEBUG_HANDLE Debu
+ 		return;
+ 
+ 	if (pDebugStruct->fh!=NULL)
+-		fprintf(pDebugStruct->fh,Message);
++		fprintf(pDebugStruct->fh, "%s", Message);
+ }
+ 
+ void	Debug_End(DEBUG_HANDLE	DebugHandle)
+--- arnold/src/cpc/debugger/gdebug.c.orig	2001-10-14 10:50:10.000000000 +0200
++++ arnold/src/cpc/debugger/gdebug.c	2017-03-07 19:46:58.717267772 +0100
+@@ -1656,7 +1656,7 @@ void	Debug_DissassembleInstruction(int A
+ 								/* 11101001 - JP (HL) */
+ 								/* 11111001 - LD SP,HL */
+ 
+-								sprintf(OutputString,
++								sprintf(OutputString, "%s",
+ 									MiscMneumonics3[((Opcode>>4) & 0x03)]);
+ 							}
+ 						}
+--- arnold/src/cpc/tzx.c.orig	2001-10-21 09:43:06.000000000 +0200
++++ arnold/src/cpc/tzx.c	2017-03-07 19:45:56.430601816 +0100
+@@ -57,7 +57,7 @@ static unsigned long TapeImage_Flags;
+ static unsigned char *pTapeBlockPtr = NULL;
+ 
+ static void	TapeImage_GetNextDataBlock(void);
+-int		TapeImage_GetBlockLength(unsigned char *pBlock);
++static int	TapeImage_GetBlockLength(unsigned char *pBlock);
+ static void	TapeImage_HandleBlock(unsigned char *);
+ 
+ 
+--- arnold/src/Makefile.in.orig	2002-01-19 15:49:14.000000000 +0100
++++ arnold/src/Makefile.in	2017-03-07 19:47:31.387267400 +0100
+@@ -27,9 +27,9 @@ SDLLIB = @SDL_LIBS@
+ #-Wall for max warnings!
+ CFLAGS = @CPPFLAGS@ @CFLAGS@ $(GTKINC) $(SDLINC) @DEFS@ $(X11INC) -I. -DUNIX -Wall -Wno-unused
+ #-g3 -pg -dm -dp -a
+-LFLAGS1 = @LDFLAGS@ @LIBS@ $(GTKLIB) $(SDLLIB) $(X11LIBS)
++LFLAGS1 = @LDFLAGS@ @LIBS@
+ #debug
+-LFLAGS2 = -s 
++LFLAGS2 = $(GTKLIB) $(SDLLIB) $(X11LIBS)
+ #LFLAGS2= -g3 -pg -dm -dp -a
+ #normal
+ #LFLAGS2 = -s

@@ -1,15 +1,19 @@
+# note: 20040104 release is on DEVEL branch, but its unix port is heavily broken; stick to 20020127
 Summary:	Amstrad CPC Emulator
 Summary(pl.UTF-8):	Emulator Amstrada CPC
 Name:		arnold
 Version:	0.20020127
-Release:	1
-License:	GPL (except ROMs)
-Group:		Applications
+Release:	2
+License:	GPL v2+ (except ROMs)
+Group:		Applications/Emulators
 Source0:	http://arnold.emuunlim.com/download/arnsrc27012002.zip
 # Source0-md5:	a8ae9ce1aeeae6ba9a19083731811150
 Patch0:		%{name}-romsdir.patch
+Patch1:		%{name}-build.patch
 URL:		http://arnold.emuunlim.com/
 BuildRequires:	SDL-devel >= 1.2.0
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	gtk+-devel >= 1.2.0
 BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -32,11 +36,16 @@ Amstrad plc.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+%patch1 -p1
+
+%{__rm} src/configure
 
 %build
 cd src
-chmod a+x configure
-%configure2_13
+%{__aclocal}
+%{__autoconf}
+%configure
+
 %{__make}
 
 %install
@@ -52,5 +61,5 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc bugsetc.txt file_id.diz readme.* whatsnew.*
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/arnold
 %{_datadir}/arnold
