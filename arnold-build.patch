@@ -1,16 +1,22 @@
---- arnold/src/cpc/debugger/debug.c.orig	2001-10-14 10:50:08.000000000 +0200
-+++ arnold/src/cpc/debugger/debug.c	2017-03-07 19:46:32.700601403 +0100
-@@ -80,7 +80,7 @@ void	Debug_WriteString(DEBUG_HANDLE Debu
- 		return;
+--- arnold/src/cpc/amsdos.c.orig	2004-01-04 08:22:58.000000000 +0100
++++ arnold/src/cpc/amsdos.c	2017-03-07 19:00:56.493965986 +0100
+@@ -559,11 +559,11 @@ int AMSDOS_GetPrefixPriority(const char
  
- 	if (pDebugStruct->fh!=NULL)
--		fprintf(pDebugStruct->fh,Message);
-+		fprintf(pDebugStruct->fh, "%s", Message);
- }
+ 		/* default prefixes in order searched for by AMSDOS */
+ 		/* assign higher priority to order prefixes are used */
+-		if (stricmp(pExtension,"   ")==0)
++		if (strcasecmp(pExtension,"   ")==0)
+ 			return 3;
+-		if (stricmp(pExtension,"BAS")==0)
++		if (strcasecmp(pExtension,"BAS")==0)
+ 			return 2;
+-		if (stricmp(pExtension,"BIN")==0)
++		if (strcasecmp(pExtension,"BIN")==0)
+ 			return 1;
+ 	}
  
- void	Debug_End(DEBUG_HANDLE	DebugHandle)
---- arnold/src/cpc/debugger/gdebug.c.orig	2001-10-14 10:50:10.000000000 +0200
-+++ arnold/src/cpc/debugger/gdebug.c	2017-03-07 19:46:58.717267772 +0100
+--- arnold/src/cpc/debugger/gdebug.c.orig	2004-01-03 10:02:20.000000000 +0100
++++ arnold/src/cpc/debugger/gdebug.c	2017-03-06 21:57:38.338164794 +0100
 @@ -1656,7 +1656,7 @@ void	Debug_DissassembleInstruction(int A
  								/* 11101001 - JP (HL) */
  								/* 11111001 - LD SP,HL */
@@ -20,20 +26,20 @@
  									MiscMneumonics3[((Opcode>>4) & 0x03)]);
  							}
  						}
---- arnold/src/cpc/tzx.c.orig	2001-10-21 09:43:06.000000000 +0200
-+++ arnold/src/cpc/tzx.c	2017-03-07 19:45:56.430601816 +0100
-@@ -57,7 +57,7 @@ static unsigned long TapeImage_Flags;
- static unsigned char *pTapeBlockPtr = NULL;
+--- arnold/src/cpc/riff.c.orig	2004-01-02 14:58:26.000000000 +0100
++++ arnold/src/cpc/riff.c	2017-03-06 22:02:38.208161368 +0100
+@@ -37,7 +37,7 @@ void	Riff_SetChunkLength(RIFF_CHUNK *pCh
+ #ifdef CPC_LSB_FIRST
+ 	pChunk->ChunkLength = Length;
+ #else
+-	pChunk->Chunklength = SwapEndianLong(Length);
++	pChunk->ChunkLength = SwapEndianLong(Length);
+ #endif
+ }
  
- static void	TapeImage_GetNextDataBlock(void);
--int		TapeImage_GetBlockLength(unsigned char *pBlock);
-+static int	TapeImage_GetBlockLength(unsigned char *pBlock);
- static void	TapeImage_HandleBlock(unsigned char *);
- 
- 
---- arnold/src/Makefile.in.orig	2002-01-19 15:49:14.000000000 +0100
-+++ arnold/src/Makefile.in	2017-03-07 19:47:31.387267400 +0100
-@@ -27,9 +27,9 @@ SDLLIB = @SDL_LIBS@
+--- arnold/src/Makefile.in.orig	2004-01-04 14:18:40.000000000 +0100
++++ arnold/src/Makefile.in	2017-03-06 22:03:42.444827342 +0100
+@@ -27,9 +27,9 @@
  #-Wall for max warnings!
  CFLAGS = @CPPFLAGS@ @CFLAGS@ $(GTKINC) $(SDLINC) @DEFS@ $(X11INC) -I. -DUNIX -Wall -Wno-unused
  #-g3 -pg -dm -dp -a
@@ -45,3 +51,203 @@
  #LFLAGS2= -g3 -pg -dm -dp -a
  #normal
  #LFLAGS2 = -s
+@@ -39,17 +39,17 @@ TARGET_CPU = @target_cpu@
+ CPC_O=	cpc/arnold.o cpc/asic.o cpc/audioevent.o cpc/bmp.o cpc/cpc.o \
+ 	cpc/crtc.o cpc/dumpym.o cpc/fdc.o cpc/fdd.o cpc/fdi.o \
+ 	cpc/garray.o cpc/multface.o cpc/printer.o cpc/psgplay.o \
+-	cpc/psg.o cpc/render.o cpc/render5.o cpc/scrsnap.o \
++	cpc/psg.o cpc/render.o cpc/render5.o \
+ 	cpc/snapshot.o cpc/sampload.o cpc/spo256.o cpc/pal.o \
+ 	cpc/voc.o cpc/tzxold.o cpc/wav.o cpc/westpha.o cpc/yiq.o \
+ 	cpc/z8536.o cpc/csw.o cpc/cassette.o cpc/amsdos.o \
+ 	cpc/debugger/gdebug.o cpc/debugger/breakpt.o \
+ 	cpc/diskimage/diskimg.o cpc/ramrom.o \
+ 	cpc/diskimage/dsk.o cpc/diskimage/extdsk.o \
+-	cpc/diskimage/iextdsk.o cpc/diskimage/maketrk.o \
++	cpc/diskimage/iextdsk.o \
+ 	cpc/z80/z80.o cpc/debugger/memdump.o \
+ 	cpc/riff.o cpc/snapv3.o \
+-	cpc/cheatsys.o cpc/cpcdbg.o cpc/messages.o
++	cpc/messages.o
+ 
+ UNIX_O= unix/main.o unix/host.o unix/global.o \
+ 	unix/display.o unix/display_sdl.o unix/gtkui.o unix/sdlsound.o \
+--- arnold/src/unix/display_sdl.c.orig	2003-12-20 18:47:50.000000000 +0100
++++ arnold/src/unix/display_sdl.c	2017-03-06 22:07:44.534824536 +0100
+@@ -34,7 +34,7 @@ static INLINE void debug(char *s) {
+ 	fprintf(stderr,"%s\n",s);
+ }
+ 
+-void sdl_InitialiseKeyboardMapping(void);
++void sdl_InitialiseKeyboardMapping(int layout);
+ void sdl_InitialiseJoysticks(void);
+ 
+ void sdl_SetDisplay(int Width, int Height, int Depth, BOOL fullscreen) {
+--- arnold/src/unix/gtkui.c.orig	2004-01-04 14:09:30.000000000 +0100
++++ arnold/src/unix/gtkui.c	2017-03-07 18:57:19.557301789 +0100
+@@ -97,7 +97,7 @@ void save_disk_and_insert( GtkWidget *w,
+ 	char *filename){
+ 	gtk_widget_destroy(GTK_WIDGET(dialog));
+ 
+-	DiskImage_WriteImage(drive);
++	// DiskImage_WriteImage(drive); // TODO: saving in unix version
+ 	DiskImage_RemoveDisk(drive);
+ 	
+ 	if (!GenericInterface_InsertDiskImage( drive, filename )) {
+@@ -135,7 +135,7 @@ void dont_save_diskB_and_insert( GtkWidg
+ void save_disk_and_quit( GtkWidget *w, GtkWindow *dialog, int drive) {
+ 	gtk_widget_destroy(GTK_WIDGET(dialog));
+ 
+-	DiskImage_WriteImage(drive);
++	// DiskImage_WriteImage(drive); // TODO: saving in unix version
+ 	DiskImage_RemoveDisk(drive);
+ 
+ 	if (!FDD_IsDiskPresent(0) && !FDD_IsDiskPresent(1)) {
+@@ -237,7 +237,7 @@ void choosen_tape( GtkWidget *w, GtkFile
+ 	char filename[ PATH_MAX ];
+ 	get_filename_and_destroy( filename, fs );
+ 
+-	if (!GenericInterface_InsertTapeImage( filename )) {
++	if (!GenericInterface_InsertTape( filename )) {
+ 		printf(Messages[73], filename);
+ 	} 
+ 
+@@ -259,14 +259,15 @@ void choosen_savesnap( GtkWidget *w, Gtk
+ 	char filename[ PATH_MAX ];
+ 	int cpcType;
+ 	get_filename_and_destroy( filename, fs );
++	int sSize;
+ 
+-	cpcType = CPC_GetCPCType();
++	cpcType = CPC_TYPE_CPC6128; // CPC_GetCPCType();
+ 	if (cpcType == CPC_TYPE_CPC6128 || cpcType == CPC_TYPE_6128PLUS) {
+-		GenericInterface_SetSnapshotSize(128);
++		sSize = 128;
+ 	} else {
+-		GenericInterface_SetSnapshotSize(64);
++		sSize = 64;
+ 	}
+-	if (!GenericInterface_SnapshotSave( filename )) {
++	if (!GenericInterface_SnapshotSave( filename, 3, sSize )) {
+ 		printf(Messages[90], filename);
+ 	} 
+ 	cpcPaused = FALSE;
+@@ -299,7 +300,7 @@ void choose_media( GtkWidget *widget, gp
+ 			title = Messages[94];
+ 			function = (GtkSignalFunc) choosen_savesnap;
+ 	} else {
+-		fprintf( stderr, Messages[95]);
++		fprintf( stderr, "%s", Messages[95]);
+ 		exit( -1 );
+ 	}
+ 
+@@ -318,7 +319,7 @@ void choose_media( GtkWidget *widget, gp
+ }
+ 
+ void reset( GtkWidget *widget, gpointer data ) {
+-	GenericInterface_DoReset();
++	CPC_Reset(); // GenericInterface_DoReset(); TODO: ask
+ }
+ 
+ static void quit( GtkWidget *widget, gpointer data ) {
+@@ -393,7 +394,7 @@ int indexInArray( char *s, char **p ) {
+ void choose_cpctype( GtkWidget *widget, gpointer data ) {
+ 	fprintf(stderr, Messages[96], (char *) data,
+ 		indexInArray((char *) data, CPCTYPESTRINGS));
+-	CPC_SetCPCType( indexInArray((char *) data, CPCTYPESTRINGS ));
++	//CPC_SetCPCType( indexInArray((char *) data, CPCTYPESTRINGS ));
+ }
+ 
+ void choose_crtctype( GtkWidget *widget, gpointer data ) {
+@@ -696,7 +697,7 @@ void gtkui_run( void ) {
+ 		gtk_idle_add( idlerun, NULL );
+ 		//gtk_timeout_add( 100, idlerun, NULL );
+ 		gtk_main();			/* GTK+ main loop */
+-		printf(Messages[103]);
++		printf("%s", Messages[103]);
+ }
+ 
+ #endif	/* HAVE_GTK */
+--- arnold/src/unix/host.c.orig	2003-12-21 09:29:54.000000000 +0100
++++ arnold/src/unix/host.c	2017-03-06 22:06:18.541492187 +0100
+@@ -212,7 +212,7 @@ void	Host_InitDriveLEDIndicator()
+ 		if(fd_console < 0) {
+ 			fprintf(stderr, Messages[84], fn_console);
+ 			perror(NULL);
+-			fprintf(stderr, Messages[85]);
++			fprintf(stderr, "%s", Messages[85]);
+ 		}
+ 		ioctl(fd_console,KDGETLED,&led_save);
+ }
+--- arnold/src/unix/main.c.orig	2004-01-04 14:10:54.000000000 +0100
++++ arnold/src/unix/main.c	2017-03-07 18:54:17.723970532 +0100
+@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
+ 
+ 	if (!CPCEmulation_CheckEndianness())
+ 	{
+-		printf(Messages[72]);
++		printf("%s", Messages[72]);
+ 		exit(1);
+ 	}
+ 	
+@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
+ 
+ 	init_main(argc, argv);
+ 	
+-	GenericInterface_Finish();
++	//GenericInterface_Finish(); // not for unix
+ 
+ //	DirStuff_Finish();
+ 
+@@ -281,7 +281,7 @@ void init_main(int argc, char *argv[]) {
+ 	/* fprintf(stderr,"%s\n",LocalDirectory); */
+ 
+ 
+-	GenericInterface_Initialise();
++	//GenericInterface_Initialise(); // not for unix
+ 
+   /* initialise cpc hardware */
+ 	CPC_Initialise();
+@@ -297,7 +297,7 @@ void init_main(int argc, char *argv[]) {
+ 		ConfigCPC6128();
+ 
+ 		if (tape) {
+-			if (!TapeImage_InsertFromFile(tape)) {
++			if (!GenericInterface_InsertTape(tape)) {
+ 				printf(Messages[73], tape);
+ 			}
+ 		}
+@@ -381,7 +381,7 @@ void init_main(int argc, char *argv[]) {
+ 		}
+ 
+ 		if (snapshot) {
+-			if (!Snapshot_Load(snapshot)) {
++			if (!GenericInterface_LoadSnapshot(snapshot)) {
+ 				printf(Messages[78],
+ 					snapshot);
+ 			}
+@@ -416,11 +416,11 @@ void init_main(int argc, char *argv[]) {
+ #ifdef HAVE_SDL
+ 		if (kbd != -1) sdl_InitialiseKeyboardMapping(kbd);
+ #endif
+-		printf(Messages[76]);
++		printf("%s", Messages[76]);
+ 
+ 		CPC_SetAudioActive(TRUE);
+ 
+-		printf(Messages[77]);
++		printf("%s", Messages[77]);
+ 
+ 		/* Enter GTK+ event loop when GTK+ is compiled in. Use own main loop
+ 		 * otherwise. */
+--- arnold/src/cpc/render.h.orig	2004-01-03 09:59:50.000000000 +0100
++++ arnold/src/cpc/render.h	2017-03-07 19:36:11.790608492 +0100
+@@ -133,7 +133,7 @@
+ 
+ void	Render_DumpLine(int LineNum);
+ 
+-void	Render_SetColour(const RGBCOLOUR *pColour,/*int,int,int,*/ int Index);
++void	Render_SetColour(RGBCOLOUR *pColour,/*int,int,int,*/ int Index);
+ 
+ void	Render_DumpDisplay(void);
+ 

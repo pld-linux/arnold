@@ -1,15 +1,14 @@
-# note: 20040104 release is on DEVEL branch, but its unix port is heavily broken; stick to 20020127
+# note: 20040104 release has heavily broken unix port
 Summary:	Amstrad CPC Emulator
 Summary(pl.UTF-8):	Emulator Amstrada CPC
 Name:		arnold
-Version:	0.20020127
-Release:	2
+Version:	0.20040104
+Release:	0.1
 License:	GPL v2+ (except ROMs)
 Group:		Applications/Emulators
-Source0:	http://arnold.emuunlim.com/download/arnsrc27012002.zip
-# Source0-md5:	a8ae9ce1aeeae6ba9a19083731811150
-Patch0:		%{name}-romsdir.patch
-Patch1:		%{name}-build.patch
+Source0:	http://arnold.emuunlim.com/download/arnsrc04012004.zip
+# Source0-md5:	bf612e1bd535930f1c32c00811bc24dd
+Patch0:		%{name}-build.patch
 URL:		http://arnold.emuunlim.com/
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	autoconf
@@ -36,12 +35,14 @@ Amstrad plc.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
-%patch1 -p1
 
 %{__rm} src/configure
 
 %build
 cd src
+%ifarch %{ix86} %{x8664} x32 alpha mipsel
+CPPFLAGS="%{rpmcppflags} -DCPC_LSB_FIRST"
+%endif
 %{__aclocal}
 %{__autoconf}
 %configure
@@ -50,9 +51,8 @@ cd src
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/arnold,%{_bindir}}
+install -d $RPM_BUILD_ROOT%{_bindir}
 
-cp -Rf roms $RPM_BUILD_ROOT%{_datadir}/arnold
 install arnold $RPM_BUILD_ROOT%{_bindir}
 
 %clean
@@ -60,6 +60,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc bugsetc.txt file_id.diz readme.* whatsnew.*
+%doc arnold_readme.txt file_id.diz readme.* whatsnew.*
+%lang(es) %doc leeme.* novedades.linux
 %attr(755,root,root) %{_bindir}/arnold
-%{_datadir}/arnold
